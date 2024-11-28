@@ -1,43 +1,46 @@
-name: dev
+name: Dev Workflow
+
 on:
   push:
     branches:
       - dev
-      - main
- 
+
 permissions:
   contents: write
- 
+
 jobs:
   dev-workflow:
-    if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
- 
+
     steps:
+      # 1. Checkout code
       - name: Checkout code
         uses: actions/checkout@v3
- 
-      - name: dependences for back
+
+      # 2. Install dependencies and run tests for backend
+      - name: Dependencies install for backend
         run: |
           cd backend
           npm install
- 
+
       - name: Tests for backend
         run: |
           cd backend
           npm test
- 
-      - name:  dependences fror front
+
+      # 3. Install dependencies and run tests for frontend
+      - name: Dependencies install for frontend
         run: |
           cd frontend
           npm install
- 
-      - name: tests front
+
+      - name: Tests for frontend
         run: |
           cd frontend
           npm test
- 
-      - name: dev into main 
+
+      # 4. Merge dev into main
+      - name: Merge Dev into Main
         if: success()
         uses: devmasx/merge-branch@master
         with:
@@ -45,14 +48,3 @@ jobs:
           from_branch: dev
           target_branch: main
           github_token: ${{ secrets.GITHUB_TOKEN }}
- 
-      - name: Trigger Push Event on Main
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin main
-          git checkout main
-          git commit --allow-empty -m "Trigger push event after merge from dev"
-          git push origin main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
