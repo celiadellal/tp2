@@ -39,7 +39,7 @@ jobs:
           cd frontend
           npm test
 
-      # 4. Merge dev into main
+      # 4. Merge dev into mainFF
       - name: Merge Dev into Main
         if: success()
         uses: devmasx/merge-branch@master
@@ -48,3 +48,5 @@ jobs:
           from_branch: dev
           target_branch: main
           github_token: ${{ secrets.TOKEN }}
+
+
